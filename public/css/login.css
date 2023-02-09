@@ -1,0 +1,25 @@
+.login,
+.image {
+    min-height: 100vh;
+}
+
+.bg-image {
+    background-image: url('https://bootstrapious.com/i/snippets/sn-page-split/bg.jpg');
+    background-size: cover;
+    background-position: center center;
+}
+
+#left {
+    text-align: initial !important;
+}
+
+.button_custom {
+    width: 300px;
+    background-color: #d95f16 !important;
+    border-color: #d95f16 !important;
+}
+
+.btn_c {
+    background-color: #773c1a !important;
+    border-color: #773c1a !important;
+}

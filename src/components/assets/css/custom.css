@@ -1,0 +1,22 @@
+.logo_custom{
+    padding: 10px 10px 10px 40px!important;
+}
+
+.table-responsive {
+    max-height:550px;
+}
+
+.tr2 {
+    max-height:650px;
+}
+
+.custom_input{
+    padding: 20px 20px 20px 20px;
+    position: relative;
+    margin-right: 50%;
+}
+
+.custom_center{
+    position: relative;
+    margin-left:32%;
+}
