@@ -19,88 +19,22 @@ const AdmData = () => {
     const handleViewShow = () => { SetViewShow(true) }
     const hanldeViewClose = () => { SetViewShow(false) }
 
-    //For Edit Model
-    const [ViewEdit, SetEditShow] = useState(false)
-    const handleEditShow = () => { SetEditShow(true) }
-    const hanldeEditClose = () => { SetEditShow(false) }
-
-    //Define here local state that store the form Data
-    const [CompanyID, setCompanyID] = useState("");
-    const [CompanyCode, setCompanyCode] = useState("")
-    const [MonthDescription, setMonthDescription] = useState("")
-    const [BusinessUnit, setBusinessUnit] = useState("")
-    const [EffectiveDate, setEffectiveDate] = useState("")
-    const [WeekNumberOfEffectiveDate, setWeekNumberOfEffectiveDate] = useState("")
-    const [Planned_Released, setPlanned_Released] = useState("")
-    const [FirmWO, setFirmWO] = useState("")
-    const [PlannedWO, setPlannedWO] = useState("")
-    const [DailyCapacity, setDailyCapacity] = useState("")
-    const [WeeklyCapacity, setWeeklyCapacity] = useState("")
-    const [MonthlyCapacity, setMonthlyCapacity] = useState("")
+    //DEFINE LOCAL STATES
     const [RequestDate, setRequestDate] = useState("")
-    const [Rate_Hour, setRate_Hour] = useState("")
-    const [PrimaryUOM_Hour, setPrimaryUOM_Hour] = useState("")
-    const [ShortItemNumber, setShortItemNumber] = useState("")
-    const [ItemDescription, setItemDescription] = useState("")
-    const [WorkOrderQuantity, setWorkOrderQuantity] = useState("")
     const [QuantityOrdered, setQuantityOrdered] = useState("")
-    const [WorkOrderNo, setWorkOrderNo] = useState("")
-    const [WOStatus, setWOStatus] = useState("")
-    const [TypeOfRouting, setTypeOfRouting] = useState("")
 
     //ID 4 UPDATE OR DELETE
     const [Id, setId] = useState("")
 
-    //DELETE
-    const [ViewDelete, SetDeleteShow] = useState(false)
-    const handleDeleteShow = () => { SetDeleteShow(true) }
-    const hanldeDeleteClose = () => { SetDeleteShow(false) }
-    const [Delete, setDelete] = useState(true)
+    // UPDATE
 
-    const handleDelete = () => {
-        const url = `http://127.0.0.1:8000/data/${Id}`
-        axios.delete(url)
-            .then(response => {
-                const result = response.data;
-                const { status, message } = result;
-                if (status !== 'SUCCESS') {
-                    alert(message, status)
-                }
-                else {
-                    alert(message)
-                    window.location.reload()
-                }
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    }
+    const [ViewEdit, SetEditShow] = useState(false)
+    const handleEditShow = () => { SetEditShow(true) }
+    const hanldeEditClose = () => { SetEditShow(false) }
 
-    // GET ALL DATA
-    const GetAllData = () => {
-        const url = 'http://127.0.0.1:8000/data'
-        axios.get(url)
-            .then(response => {
-                const result = response.data;
-                const { status, message, data } = result;
-                if (status !== 'SUCCESS') {
-                    alert("Something is wrong")
-                }
-                else {
-                    setData(data)
-                    console.log(data)
-                    // SUCCESS
-                }
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    }
-
-    // EDIT DATA
     const handleEdit = () => {
         const url = `http://127.0.0.1:8000/data/${Id}`
-        const Credentials = { CompanyID, CompanyCode, MonthDescription, BusinessUnit, EffectiveDate, WeekNumberOfEffectiveDate, Planned_Released, FirmWO, PlannedWO, DailyCapacity, WeeklyCapacity, MonthlyCapacity, RequestDate, Rate_Hour, PrimaryUOM_Hour, ShortItemNumber, ItemDescription, WorkOrderQuantity, QuantityOrdered, WorkOrderNo, WOStatus, TypeOfRouting }
+        const Credentials = { RequestDate, QuantityOrdered }
         axios.put(url, Credentials)
             .then(response => {
                 const result = response.data;
@@ -118,8 +52,62 @@ const AdmData = () => {
             })
     }
 
-    //call this function in useEffect
-    console.log(ViewShow, RowData)
+    //DELETE
+    const [Delete, setDelete] = useState(true)
+
+    const handleDelete = () => {
+        const url = `http://127.0.0.1:8000/data/${Id}`
+        axios.delete(url)
+            .then(response => {
+                const result = response.data;
+                const { status, message } = result;
+                if (status !== 'SUCCESS') {
+                    MySwal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                    })
+                }
+                else {
+                    window.location.reload()
+                }
+            })
+            .catch(err => {
+                MySwal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                })
+            })
+    }
+
+    // GET ALL DATA
+    const GetAllData = () => {
+        const url = 'http://127.0.0.1:8000/data'
+        axios.get(url)
+            .then(response => {
+                const result = response.data;
+                const { status, data } = result;
+                if (status !== 'SUCCESS') {
+                    MySwal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                    })
+                }
+                else {
+                    setData(data)
+                }
+            })
+            .catch(err => {
+                MySwal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                })
+            })
+    }
+
     useEffect(() => {
         GetAllData();
     }, [])
@@ -195,7 +183,6 @@ const AdmData = () => {
                 {/* END HEADER */}
 
                 <div className="content">
-                    {/* START TABLE */}
                     <div className="row">
                         <div class="col-md-12">
                             <div class="card">
@@ -204,6 +191,7 @@ const AdmData = () => {
                                     <input type="file" accept=".csv" class="form-control" id="customFile" />
                                 </div>
 
+                                {/* START TABLE */}
                                 <div class="card-body">
                                     <div class="table-responsive tr2">
                                         <table id="table" class="table" data-pagination="true">
@@ -234,27 +222,27 @@ const AdmData = () => {
                                             <tbody>
                                                 {Data.map((item) =>
                                                     <tr key={item._id}>
-                                                        <td>{item.CompanyCode}</td>
-                                                        <td>{item.MonthDescription}</td>
-                                                        <td>{item.BusinessUnit}</td>
-                                                        <td>{item.EffectiveDate}</td>
-                                                        <td>{item.WeekNumberOfEffectiveDate}</td>
-                                                        <td>{item.Planned_Released}</td>
-                                                        <td>{item.FirmWO}</td>
-                                                        <td>{item.PlannedWO}</td>
-                                                        <td>{item.DailyCapacity}</td>
-                                                        <td>{item.WeeklyCapacity}</td>
-                                                        <td>{item.MonthlyCapacity}</td>
-                                                        <td>{item.RequestDate}</td>
-                                                        <td>{item.Rate_Hour}</td>
-                                                        <td>{item.PrimaryUOM_Hour}</td>
-                                                        <td>{item.ShortItemNumber}</td>
-                                                        <td>{item.ItemDescription}</td>
-                                                        <td>{item.WorkOrderQuantity}</td>
-                                                        <td>{item.QuantityOrdered}</td>
-                                                        <td>{item.WorkOrderNo}</td>
-                                                        <td>{item.WOStatus}</td>
-                                                        <td>{item.TypeOfRouting}</td>
+                                                        <td class="text-center">{item.CompanyCode}</td>
+                                                        <td class="text-center">{item.MonthDescription}</td>
+                                                        <td class="text-center">{item.BusinessUnit}</td>
+                                                        <td class="text-center">{item.EffectiveDate}</td>
+                                                        <td class="text-center">{item.WeekNumberOfEffectiveDate}</td>
+                                                        <td class="text-center">{item.Planned_Released}</td>
+                                                        <td class="text-center">{item.FirmWO}</td>
+                                                        <td class="text-center">{item.PlannedWO}</td>
+                                                        <td class="text-center">{item.DailyCapacity}</td>
+                                                        <td class="text-center">{item.WeeklyCapacity}</td>
+                                                        <td class="text-center">{item.MonthlyCapacity}</td>
+                                                        <td class="text-center">{item.RequestDate}</td>
+                                                        <td class="text-center">{item.Rate_Hour}</td>
+                                                        <td class="text-center">{item.PrimaryUOM_Hour}</td>
+                                                        <td class="text-center">{item.ShortItemNumber}</td>
+                                                        <td class="text-center">{item.ItemDescription}</td>
+                                                        <td class="text-center">{item.WorkOrderQuantity}</td>
+                                                        <td class="text-center">{item.QuantityOrdered}</td>
+                                                        <td class="text-center">{item.WorkOrderNo}</td>
+                                                        <td class="text-center">{item.WOStatus}</td>
+                                                        <td class="text-center">{item.TypeOfRouting}</td>
                                                         <td style={{ minWidth: 170 }}>
                                                             <Button size='sm' variant='warning' onClick={() => { handleEditShow(SetRowData(item), setId(item._id)) }}>Editar</Button>
                                                             |<Button size='sm' variant='danger' onClick={() => { handleViewShow(SetRowData(item), setId(item._id), setDelete(true)) }}>Eliminar</Button>
@@ -265,10 +253,10 @@ const AdmData = () => {
                                         </table>
                                     </div>
                                 </div>
+                                {/* END TABLE */}
                             </div>
                         </div>
                     </div>
-                    {/* END TABLE */}
                 </div>
 
                 {/* START FOOTER */}
@@ -293,33 +281,7 @@ const AdmData = () => {
                 {/* END FOOTER */}
             </div>
 
-            {/* DELETE MODAL */}
-            <div className='model-box-view'>
-                <Modal
-                    show={ViewShow}
-                    onHide={hanldeViewClose}
-                    backdrop="static"
-                    keyboard={false}
-                >
-                    <Modal.Header>
-                        <Modal.Title>¿Desea eliminar el registro perteneciente a CompanyID = {RowData.CompanyID}?</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div>
-                            {
-                                Delete && (
-                                    <Button type='submit' className='btn btn-danger mt-2 custom_center' onClick={handleDelete}>Eliminar registro</Button>
-                                )
-                            }
-                        </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant='secondary' onClick={hanldeViewClose}>Cerrar</Button>
-                    </Modal.Footer>
-                </Modal>
-            </div>
-
-            {/* EDIT MODAL */}
+            {/* START EDIT MODAL */}
             <div className='model-box-view'>
                 <Modal
                     show={ViewEdit}
@@ -332,10 +294,6 @@ const AdmData = () => {
                     </Modal.Header>
                     <Modal.Body>
                         <div>
-                            <div className='form-group'>
-                                <label>CompanyID</label>
-                                <input type="text" className='form-control' onChange={(e) => setCompanyID(e.target.value)} defaultValue={RowData.CompanyID} readOnly />
-                            </div>
                             <div className='form-group mt-3'>
                                 <label>Request Date</label>
                                 <input type="date" className='form-control' onChange={(e) => setRequestDate(e.target.value)} defaultValue={RowData.RequestDate} required="true" />
@@ -354,6 +312,34 @@ const AdmData = () => {
                     </Modal.Footer>
                 </Modal>
             </div>
+            {/* END EDIT MODAL */}
+
+            {/* START DELETE MODAL */}
+            <div className='model-box-view'>
+                <Modal
+                    show={ViewShow}
+                    onHide={hanldeViewClose}
+                    backdrop="static"
+                    keyboard={false}
+                >
+                    <Modal.Header>
+                        <Modal.Title>¿Desea eliminar el registro seleccionado?</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div>
+                            {
+                                Delete && (
+                                    <Button type='submit' className='btn btn-danger mt-2 custom_center' onClick={handleDelete}>Eliminar registro</Button>
+                                )
+                            }
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant='secondary' onClick={hanldeViewClose}>Cerrar</Button>
+                    </Modal.Footer>
+                </Modal>
+            </div>
+            {/* END DELETE MODAL */}
         </div>
     )
 }
