@@ -23,8 +23,60 @@ router.get('/data', function (req, res) {
             }
         })
     } catch (error) {
-
+        console.log(" - [FAIL] GetAllData: " + error)
     }
 });
+
+// DELETE 
+router.delete("/data/:id", function (req, res) {
+    try {
+        const _id = req.params.id;
+        Data.findByIdAndDelete(_id, function (err, result) {
+            if (err) {
+                console.log(" - [FAIL] DeleteData: " + err)
+            }
+            if (result) {
+                res.json({
+                    status: "SUCCESS"
+                })
+                console.log(" - [OK] DeleteData: El registro fue eliminado")
+            } else {
+                res.json({
+                    status: "FAILED",
+                })
+                console.log(" - [FAIL] DeleteData: No fue posible eliminar el registro")
+            }
+        })
+    }
+    catch (error) {
+        console.log(" - [FAIL] DeleteData: " + error)
+    }
+})
+
+// UPDATE 
+router.put("/data/:id", function (req, res) {
+    try {
+        const _id = req.params.id;
+        Data.findByIdAndUpdate(_id, req.body, { new: true }, function (err, result) {
+            if (err) {
+                console.log(" - [FAIL] DeleteData: " + err)
+            }
+            if (result) {
+                res.json({
+                    status: "SUCCESS"
+                })
+                console.log(" - [OK] UpdateData: El registro fue eliminado")
+            } else {
+                res.json({
+                    status: "FAILED",
+                })
+                console.log(" - [FAIL] UpdateData: No fue posible eliminar el registro")
+            }
+        })
+    }
+    catch (error) {
+        console.log(" - [FAIL] DeleteData: " + error)
+    }
+})
 
 module.exports = router

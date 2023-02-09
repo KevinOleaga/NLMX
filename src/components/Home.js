@@ -263,27 +263,27 @@ const Home = () => {
                                             <tbody>
                                                 {Data.map((item) =>
                                                     <tr key={item._id}>
-                                                        <td>{item.CompanyCode}</td>
-                                                        <td>{item.MonthDescription}</td>
-                                                        <td>{item.BusinessUnit}</td>
-                                                        <td>{item.EffectiveDate}</td>
-                                                        <td>{item.WeekNumberOfEffectiveDate}</td>
-                                                        <td>{item.Planned_Released}</td>
-                                                        <td>{item.FirmWO}</td>
-                                                        <td>{item.PlannedWO}</td>
-                                                        <td>{item.DailyCapacity}</td>
-                                                        <td>{item.WeeklyCapacity}</td>
-                                                        <td>{item.MonthlyCapacity}</td>
-                                                        <td>{item.RequestDate}</td>
-                                                        <td>{item.Rate_Hour}</td>
-                                                        <td>{item.PrimaryUOM_Hour}</td>
-                                                        <td>{item.ShortItemNumber}</td>
-                                                        <td>{item.ItemDescription}</td>
-                                                        <td>{item.WorkOrderQuantity}</td>
-                                                        <td>{item.QuantityOrdered}</td>
-                                                        <td>{item.WorkOrderNo}</td>
-                                                        <td>{item.WOStatus}</td>
-                                                        <td>{item.TypeOfRouting}</td>
+                                                        <td class="text-center">{item.CompanyCode}</td>
+                                                        <td class="text-center">{item.MonthDescription}</td>
+                                                        <td class="text-center">{item.BusinessUnit}</td>
+                                                        <td class="text-center">{item.EffectiveDate}</td>
+                                                        <td class="text-center">{item.WeekNumberOfEffectiveDate}</td>
+                                                        <td class="text-center">{item.Planned_Released}</td>
+                                                        <td class="text-center">{item.FirmWO}</td>
+                                                        <td class="text-center">{item.PlannedWO}</td>
+                                                        <td class="text-center">{item.DailyCapacity}</td>
+                                                        <td class="text-center">{item.WeeklyCapacity}</td>
+                                                        <td class="text-center">{item.MonthlyCapacity}</td>
+                                                        <td class="text-center">{item.RequestDate}</td>
+                                                        <td class="text-center">{item.Rate_Hour}</td>
+                                                        <td class="text-center">{item.PrimaryUOM_Hour}</td>
+                                                        <td class="text-center">{item.ShortItemNumber}</td>
+                                                        <td class="text-center">{item.ItemDescription}</td>
+                                                        <td class="text-center">{item.WorkOrderQuantity}</td>
+                                                        <td class="text-center">{item.QuantityOrdered}</td>
+                                                        <td class="text-center">{item.WorkOrderNo}</td>
+                                                        <td class="text-center">{item.WOStatus}</td>
+                                                        <td class="text-center">{item.TypeOfRouting}</td>
                                                     </tr>
                                                 )}
                                             </tbody>
