@@ -10,6 +10,7 @@ Documentación:
 
 Para ejecutar el proyecto, en el directorio del proyecto (prj_nlmx), se deben ejecutar los siguientes comandos en la terminal:
 
+### `npm install`
 ### `npm start`
 
 Levanta el frontend del aplicativo en http://localhost:3000
