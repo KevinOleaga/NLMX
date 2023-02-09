@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import companyLogo from './assets/img/logo.png';
 import axios from 'axios'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 import './assets/css/bootstrap.min.css';
 import './assets/css/paper-dashboard.min.css';
 import './assets/css/custom.css';
@@ -8,31 +10,7 @@ import './assets/demo/demo.css';
 
 const Home = () => {
     const [Data, setData] = useState([]);
-    const [RowData, SetRowData] = useState([])
-    const [ViewShow, SetViewShow] = useState(false)
-
-    const [CompanyID, setCompanyID] = useState("")
-    const [CompanyCode, setCompanyCode] = useState("")
-    const [MonthDescription, setMonthDescription] = useState("")
-    const [BusinessUnit, setBusinessUnit] = useState("")
-    const [EffectiveDate, setEffectiveDate] = useState("")
-    const [WeekNumberOfEffectiveDate, setWeekNumberOfEffectiveDate] = useState("")
-    const [Planned_Released, setPlanned_Released] = useState("")
-    const [FirmWO, setFirmWO] = useState("")
-    const [PlannedWO, setPlannedWO] = useState("")
-    const [DailyCapacity, setDailyCapacity] = useState("")
-    const [WeeklyCapacity, setWeeklyCapacity] = useState("")
-    const [MonthlyCapacity, setMonthlyCapacity] = useState("")
-    const [RequestDate, setRequestDate] = useState("")
-    const [Rate_Hour, setRate_Hour] = useState("")
-    const [PrimaryUOM_Hour, setPrimaryUOM_Hour] = useState("")
-    const [ShortItemNumber, setShortItemNumber] = useState("")
-    const [ItemDescription, setItemDescription] = useState("")
-    const [WorkOrderQuantity, setWorkOrderQuantity] = useState("")
-    const [QuantityOrdered, setQuantityOrdered] = useState("")
-    const [WorkOrderNo, setWorkOrderNo] = useState("")
-    const [WOStatus, setWOStatus] = useState("")
-    const [TypeOfRouting, setTypeOfRouting] = useState("")
+    const MySwal = withReactContent(Swal)
 
     // GET ALL DATA
     const GetAllData = () => {
@@ -40,21 +18,27 @@ const Home = () => {
         axios.get(url)
             .then(response => {
                 const result = response.data;
-                const { status, message, data } = result;
+                const { status, data } = result;
                 if (status !== 'SUCCESS') {
-                    alert("Something is wrong")
+                    MySwal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                    })
                 }
                 else {
                     setData(data)
-                    console.log(data)
-                    // SUCCESS
                 }
             })
             .catch(err => {
-                console.log(err)
+                MySwal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                })
             })
     }
-    console.log(ViewShow, RowData)
+
     useEffect(() => {
         GetAllData();
     }, [])
@@ -254,7 +238,6 @@ const Home = () => {
                                     <div class="table-responsive">
                                         <table id="table" class="table" data-pagination="true">
                                             <thead class="text-primary">
-                                                <th class="text-center">#</th>
                                                 <th class="text-center">Company Code</th>
                                                 <th class="text-center">Month Description</th>
                                                 <th class="text-center">Business Unit</th>
@@ -279,8 +262,7 @@ const Home = () => {
                                             </thead>
                                             <tbody>
                                                 {Data.map((item) =>
-                                                    <tr key={item.CompanyID}>
-                                                        <td>{item.CompanyID}</td>
+                                                    <tr key={item._id}>
                                                         <td>{item.CompanyCode}</td>
                                                         <td>{item.MonthDescription}</td>
                                                         <td>{item.BusinessUnit}</td>
@@ -314,6 +296,7 @@ const Home = () => {
                     {/* END TABLE */}
                 </div>
 
+                {/* START FOOTER */}
                 <footer class="footer footer-black  footer-white ">
                     <div class="container-fluid">
                         <div class="row">
@@ -332,6 +315,7 @@ const Home = () => {
                         </div>
                     </div>
                 </footer>
+                {/* END FOOTER */}
             </div>
         </div>
     )
