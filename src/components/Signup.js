@@ -3,6 +3,8 @@ import axios from "axios"
 import { useNavigate, Link } from "react-router-dom"
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import './assets/css/login.css';
+import 'bootstrap/dist/css/bootstrap.css';
 
 function Signup() {
 

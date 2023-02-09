@@ -3,6 +3,8 @@ import axios from "axios"
 import { useNavigate, Link } from "react-router-dom"
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import './assets/css/login.css';
+import 'bootstrap/dist/css/bootstrap.css';
 
 function Login() {
 
@@ -23,7 +25,7 @@ function Login() {
                     text: 'Por favor, complete el formulario correctamente'
                 })
             } else {
-                await axios.post("http://127.0.0.1:8000/", {
+                await axios.post("http://127.0.0.1:8000/login", {
                     email, password
                 })
                     .then(res => {
@@ -33,7 +35,7 @@ function Login() {
                             MySwal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
-                                text: 'El usuario no se encuentra en registrado!'
+                                text: 'Credenciales incorrectas'
                             })
                             var inputEmail = document.getElementById("inputEmail");
                             var inputPassword = document.getElementById("inputPassword");
@@ -75,7 +77,6 @@ function Login() {
                                         </div>
                                         <div className="form-group mb-4">
                                             <button type="submit" onClick={submit} className="btn btn-primary btn-block text-uppercase mb-2 rounded-pill button_custom">Iniciar sesi&oacute;n</button>
-                                            <br></br>
                                             <Link className="btn btn-primary btn-block text-uppercase mb-2 rounded-pill button_custom btn_c" to="/signup">Crear usuario</Link>
                                         </div>
                                     </form>

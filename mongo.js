@@ -1,12 +1,3 @@
-const mongoose = require("mongoose")
-mongoose.connect("mongodb://127.0.0.1:27017/Reto2")
-    .then(() => {
-        console.log("mongodb connected");
-    })
-    .catch(() => {
-        console.log("failed");
-    })
-
 // USERS CONFIG
 const newSchema = new mongoose.Schema({
     email: {
@@ -19,9 +10,9 @@ const newSchema = new mongoose.Schema({
     }
 })
 
-const collection = mongoose.model("users", newSchema)
+const users = mongoose.model("users", newSchema)
 
-module.exports = collection
+module.exports = users
 
 // DATA CONFIG
 const dataSchema = new mongoose.Schema({
