@@ -48,7 +48,7 @@ const Home = () => {
             {/* START MENU */}
             <div class="sidebar" data-color="black" data-active-color="danger">
                 <div class="logo">
-                    <a className="simple-text logo-normal">
+                    <a href="#" className="simple-text logo-normal">
                         <div className="logo-image-small">
                             <img className="img-responsive logo-normal logo_custom" src={companyLogo} alt="NLMX" />
                         </div>
@@ -92,7 +92,7 @@ const Home = () => {
                                     <span class="navbar-toggler-bar bar3"></span>
                                 </button>
                             </div>
-                            <a class="navbar-brand" href="javascript:;">¡Bienvenido! ► Inicio</a>
+                            <a href="#" class="navbar-brand">¡Bienvenido! ► Inicio</a>
                         </div>
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
                             aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">

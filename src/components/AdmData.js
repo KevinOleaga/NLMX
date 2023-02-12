@@ -70,7 +70,7 @@ const AdmData = () => {
         axios.put(url, Credentials)
             .then(response => {
                 const result = response.data;
-                const { status, message } = result;
+                const { status } = result;
                 if (status !== 'SUCCESS') {
                     MySwal.fire({
                         icon: 'error',
@@ -99,7 +99,7 @@ const AdmData = () => {
         axios.delete(url)
             .then(response => {
                 const result = response.data;
-                const { status, message } = result;
+                const { status } = result;
                 if (status !== 'SUCCESS') {
                     MySwal.fire({
                         icon: 'error',
@@ -131,7 +131,7 @@ const AdmData = () => {
         axios.post('http://127.0.0.1:8000/data/upload', formData)
             .then(response => {
                 const result = response.data;
-                const { status, message } = result;
+                const { status } = result;
                 if (status !== 'SUCCESS') {
                     MySwal.fire({
                         icon: 'error',
@@ -144,7 +144,7 @@ const AdmData = () => {
                     axios.delete('http://127.0.0.1:8000/deleteAllData', formData)
                         .then(response => {
                             const result = response.data;
-                            const { status, message } = result;
+                            const { status } = result;
                             if (status !== 'SUCCESS') {
                                 MySwal.fire({
                                     icon: 'error',
@@ -157,7 +157,7 @@ const AdmData = () => {
                                 axios.post('http://127.0.0.1:8000/data/convert', formData)
                                     .then(response => {
                                         const result = response.data;
-                                        const { status, message } = result;
+                                        const { status } = result;
                                         if (status !== 'SUCCESS') {
                                             MySwal.fire({
                                                 icon: 'error',
@@ -170,7 +170,7 @@ const AdmData = () => {
                                             axios.post('http://127.0.0.1:8000/data/saveData', formData)
                                                 .then(response => {
                                                     const result = response.data;
-                                                    const { status, message } = result;
+                                                    const { status } = result;
                                                     if (status !== 'SUCCESS') {
                                                         MySwal.fire({
                                                             icon: 'error',
@@ -215,7 +215,6 @@ const AdmData = () => {
             })
     }
 
-
     useEffect(() => {
         GetAllData();
     }, [])
@@ -225,7 +224,7 @@ const AdmData = () => {
             {/* START MENU */}
             <div class="sidebar" data-color="black" data-active-color="danger">
                 <div class="logo">
-                    <a className="simple-text logo-normal">
+                    <a className="simple-text logo-normal" href='#'>
                         <div className="logo-image-small">
                             <img className="img-responsive logo-normal logo_custom" src={companyLogo} alt="NLMX" />
                         </div>
@@ -269,7 +268,7 @@ const AdmData = () => {
                                     <span class="navbar-toggler-bar bar3"></span>
                                 </button>
                             </div>
-                            <a class="navbar-brand" href="javascript:;">¡Bienvenido! ► Administraci&oacute;n de datos</a>
+                            <a href="#" class="navbar-brand">¡Bienvenido! ► Administraci&oacute;n de datos</a>
                         </div>
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
                             aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
