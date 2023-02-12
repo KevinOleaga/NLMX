@@ -171,34 +171,34 @@ router.post("/data/convert", function (req, res) {
 })
 
 // SAVE DATA
-const data = JSON.parse(fs.readFileSync('./uploads/Data.json', 'utf-8'))
-
-
-// import data to MongoDB
-const importData = async () => {
-    try {
-        await Data.create(data)
-        console.log('data successfully imported')
-        // to exit the process
-        process.exit()
-    } catch (error) {
-        console.log('error', error)
-    }
-}
-
 router.post("/data/saveData", function (req, res) {
+    fs.readFile('./uploads/Data.json', 'utf-8', (err, data) => {
 
-    const importData = async () => {
-        try {
-            await Data.create(data)
-            console.log('data successfully imported')
-            // to exit the process
-            process.exit()
-        } catch (error) {
-            console.log('error', error)
+        if (err) {
+            console.log(" - [FAIL] SaveData: " + err)
         }
-    }
-    importData() 
+
+        const jsonData = JSON.parse(data);
+
+        // SAVE IT TO MONGODB
+        Data.create(jsonData, (error, result) => {
+            if (err) {
+                console.log(" - [FAIL] SaveData: " + err)
+            }
+            if (result) {
+                res.json({
+                    status: "SUCCESS"
+                })
+                console.log(" - [OK] SaveData: Se guardaron todos los registros");
+            } else {
+                res.json({
+                    status: "FAILED"
+                })
+                console.log(" - [FAIL] SaveData: No fue posible guardar todos los registros")
+            }
+        });
+    });
+
 })
 
 module.exports = router

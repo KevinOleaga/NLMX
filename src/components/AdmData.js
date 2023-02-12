@@ -169,12 +169,22 @@ const AdmData = () => {
                                             // SAVE DATA
                                             axios.post('http://127.0.0.1:8000/data/saveData', formData)
                                                 .then(response => {
-                                                    window.location.reload();
+                                                    const result = response.data;
+                                                    const { status, message } = result;
+                                                    if (status !== 'SUCCESS') {
+                                                        MySwal.fire({
+                                                            icon: 'error',
+                                                            title: 'Oops...',
+                                                            text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                                                        })
+                                                    } else {
+                                                        window.location.reload();
+                                                    }
                                                 }).catch(err => {
                                                     MySwal.fire({
                                                         icon: 'error',
                                                         title: 'Oops...',
-                                                        text: 'Ha odddddddcurrido un error, contacta al administrador para solventarlo' + err.message
+                                                        text: 'Ha ocurrido un error, contacta al administrador para solventarlo' + err.message
                                                     })
                                                 })
                                         }
@@ -285,12 +295,14 @@ const AdmData = () => {
                         <div class="col-md-12">
                             <div class="card">
                                 <div className='custom_input'>
-                                    <h5 class="form-label" for="customFile">Ingrese un nuevo archivo en formato .csv</h5>
+                                    <h5 class="form-label" for="customFile">Ingrese un nuevo archivo en formato .xlsx</h5>
                                     <br></br>
+                                    {/* START INPUT FILE */}
                                     <form onSubmit={saveExcel}>
                                         <input type="file" accept=".xlsx" name="file" class="form-control form-control" onChange={handleChange} />
                                         <button class="btn btn-warning" type="submit">Cargar archivo</button>
                                     </form>
+                                    {/* END INPUT FILE */}
                                 </div>
 
                                 {/* START TABLE */}
@@ -396,17 +408,17 @@ const AdmData = () => {
                     </Modal.Header>
                     <Modal.Body>
                         <div>
-                            <div className='form-group mt-3'>
-                                <label>Request Date</label>
-                                <input type="date" className='form-control' onChange={(e) => setRequestDate(e.target.value)} defaultValue={RowData.RequestDate} required />
-                            </div>
-                            <div className='form-group mt-3'>
-                                <label>Quantity Ordered</label>
-                                <input type="number" placeholder="adsf" className='form-control' onChange={(e) => setQuantityOrdered(e.target.value)} defaultValue={RowData.QuantityOrdered} required />
-                            </div>
-                            <Button type='submit' className='btn btn-warning mt-4 custom_center' onClick={handleEdit}>Editar registro</Button>
-                            <div>
-                            </div>
+                            <form onSubmit={handleEdit}>
+                                <div className='form-group mt-3'>
+                                    <label>Quantity Ordered = {RowData.QuantityOrdered}</label>
+                                    <input type="number" placeholder="Digite un nuevo valor" className='form-control' onChange={(e) => setQuantityOrdered(e.target.value)} required />
+                                </div>
+                                <div className='form-group mt-3'>
+                                    <label>Request Date = {RowData.RequestDate}</label>
+                                    <input type="date" className='form-control' onChange={(e) => setRequestDate(e.target.value)} required />
+                                </div>
+                                <Button type='submit' className='btn btn-warning mt-4 custom_center'>Editar registro</Button>
+                            </form>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
