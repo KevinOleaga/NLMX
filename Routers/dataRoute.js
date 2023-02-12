@@ -187,14 +187,14 @@ router.post("/data/saveData", function (req, res) {
             }
             if (result) {
                 res.json({
+                    status: "FAILED"
+                })
+                console.log(" - [FAIL] SaveData: No fue posible guardar todos los registros" + result)
+            } else {
+                res.json({
                     status: "SUCCESS"
                 })
                 console.log(" - [OK] SaveData: Se guardaron todos los registros");
-            } else {
-                res.json({
-                    status: "FAILED"
-                })
-                console.log(" - [FAIL] SaveData: No fue posible guardar todos los registros")
             }
         });
     });

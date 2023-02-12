@@ -299,7 +299,7 @@ const AdmData = () => {
                                     <br></br>
                                     {/* START INPUT FILE */}
                                     <form onSubmit={saveExcel}>
-                                        <input type="file" accept=".xlsx" name="file" class="form-control form-control" onChange={handleChange} />
+                                        <input type="file" accept=".xlsx" name="file" class="form-control form-control" onChange={handleChange} required/>
                                         <button class="btn btn-warning" type="submit">Cargar archivo</button>
                                     </form>
                                     {/* END INPUT FILE */}
