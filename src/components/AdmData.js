@@ -1,19 +1,108 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Modal } from 'react-bootstrap'
-import companyLogo from './assets/img/logo.png';
 import axios from 'axios'
+import * as XLSX from "xlsx";
+import Swal from 'sweetalert2'
+import { Button, Modal } from 'react-bootstrap'
+import React, { useEffect, useState } from 'react';
+import withReactContent from 'sweetalert2-react-content'
 import './assets/css/bootstrap.min.css';
 import './assets/css/paper-dashboard.min.css';
 import './assets/css/custom.css';
 import './assets/demo/demo.css';
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
+import companyLogo from './assets/img/logo.png';
 
 const AdmData = () => {
 
-    const MySwal = withReactContent(Swal)
+    const [file, setFile] = useState(null);
+
+    const handleChange = (e) => {
+        setFile(e.target.files[0]);
+    };
+
+    const saveExcel_bk = async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const res = await axios.post('http://127.0.0.1:8000/data/upload', formData);
+            MySwal.fire({
+                title: <strong>Datos almacenados correctamente!</strong>,
+                icon: 'success'
+            })
+        } catch (err) {
+            MySwal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Ha ocurrido un error al cargar los datos, contacta al administrador para solventarlo'
+            })
+
+            // alert("Error: saveExcel() ► " + err);
+        }
+    };
+
+
+    const saveExcel = (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append('file', file);
+        try {
+            const res = axios.post('http://127.0.0.1:8000/data/upload', formData);
+            MySwal.fire({
+                title: <strong>Datos almacenados correctamente!</strong>,
+                icon: 'success'
+            })
+        } catch (err) {
+            MySwal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Ha ocurrido un error al cargar los datos, contacta al administrador para solventarlo'
+            })
+
+            // alert("Error: saveExcel() ► " + err);
+        }
+    }
+
+
+
 
     const [Data, setData] = useState([]);
+
+    const readExcel = (file) => {
+        const promise = new Promise((resolve, reject) => {
+            const fileReader = new FileReader();
+            fileReader.readAsArrayBuffer(file);
+
+            fileReader.onload = (e) => {
+                const bufferArray = e.target.result;
+                const wb = XLSX.read(bufferArray, { type: "buffer" });
+                const wsname = wb.SheetNames[0];
+                const ws = wb.Sheets[wsname];
+                const data = XLSX.utils.sheet_to_json(ws);
+                resolve(data);
+            };
+
+            fileReader.onerror = (error) => {
+                reject(error);
+            };
+        });
+
+        promise.then((d) => {
+            setData(d);
+        });
+    };
+
+
+
+
+
+
+
+
+    
+    const MySwal = withReactContent(Swal)
+
     const [RowData, SetRowData] = useState([])
     const [ViewShow, SetViewShow] = useState(false)
     const handleViewShow = () => { SetViewShow(true) }
@@ -27,7 +116,6 @@ const AdmData = () => {
     const [Id, setId] = useState("")
 
     // UPDATE
-
     const [ViewEdit, SetEditShow] = useState(false)
     const handleEditShow = () => { SetEditShow(true) }
     const hanldeEditClose = () => { SetEditShow(false) }
@@ -40,15 +128,22 @@ const AdmData = () => {
                 const result = response.data;
                 const { status, message } = result;
                 if (status !== 'SUCCESS') {
-                    alert(message, status)
+                    MySwal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                    })
                 }
                 else {
-                    alert(message)
                     window.location.reload()
                 }
             })
             .catch(err => {
-                console.log(err)
+                MySwal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                })
             })
     }
 
@@ -97,6 +192,33 @@ const AdmData = () => {
                 }
                 else {
                     setData(data)
+                }
+            })
+            .catch(err => {
+                MySwal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                })
+            })
+    }
+
+    // DELETE ALL DATA
+    const DeleteAllData = () => {
+        const url = `http://127.0.0.1:8000/data/deleteAll`
+        axios.get(url)
+            .then(response => {
+                const result = response.data;
+                const { status } = result;
+                if (status !== 'SUCCESS') {
+                    MySwal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                    })
+                }
+                else {
+                    alert("TABLA DEPURADA")
                 }
             })
             .catch(err => {
@@ -188,7 +310,22 @@ const AdmData = () => {
                             <div class="card">
                                 <div className='custom_input'>
                                     <h5 class="form-label" for="customFile">Ingrese un nuevo archivo en formato .csv</h5>
-                                    <input type="file" accept=".csv" class="form-control" id="customFile" />
+
+
+                                    <input type="file" accept=".xlsx" class="form-control form-control-lg" id="formFile" onChange={e => { 
+                                        const file = e.target.files[0];
+                                        this.DeleteAllData(); 
+                                        this.saveExcel(file) 
+                                    }}/>
+                                    
+                                    
+                                 
+
+
+                                    <form onSubmit={saveExcel}>
+                                        <input type="file" name="file" onChange={handleChange} />
+                                        <button type="submit">Upload</button>
+                                    </form>
                                 </div>
 
                                 {/* START TABLE */}
