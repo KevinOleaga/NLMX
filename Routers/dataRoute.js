@@ -181,7 +181,7 @@ router.post("/data/saveData", function (req, res) {
         const jsonData = JSON.parse(data);
 
         // SAVE IT TO MONGODB
-        Data.create(jsonData, (error, result) => {
+        Data.create(jsonData, (result) => {
             if (err) {
                 console.log(" - [FAIL] SaveData: " + err)
             }
