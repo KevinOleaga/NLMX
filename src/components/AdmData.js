@@ -217,6 +217,7 @@ const AdmData = () => {
 
     useEffect(() => {
         GetAllData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
