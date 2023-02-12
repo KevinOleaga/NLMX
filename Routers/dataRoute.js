@@ -1,9 +1,9 @@
 const express = require("express")
 const Data = require("./../Models/data")
+const fs = require('fs');
+const path = require('path');
 const router = express.Router();
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 const xlsxToJson = require('xlsx-to-json');
 
 // GET ALL DATA
@@ -31,6 +31,32 @@ router.get('/data', function (req, res) {
     }
 });
 
+// UPDATE DATA
+router.put("/data/:id", function (req, res) {
+    try {
+        const _id = req.params.id;
+        Data.findByIdAndUpdate(_id, req.body, { new: true }, function (err, result) {
+            if (err) {
+                console.log(" - [FAIL] UpdateData: " + err)
+            }
+            if (result) {
+                res.json({
+                    status: "SUCCESS"
+                })
+                console.log(" - [OK] UpdateData: El registro fue actualizado")
+            } else {
+                res.json({
+                    status: "FAILED",
+                })
+                console.log(" - [FAIL] UpdateData: No fue posible actualizar el registro")
+            }
+        })
+    }
+    catch (error) {
+        console.log(" - [FAIL] UpdateData: " + error)
+    }
+})
+
 // DELETE 
 router.delete("/data/:id", function (req, res) {
     try {
@@ -57,34 +83,42 @@ router.delete("/data/:id", function (req, res) {
     }
 })
 
-// UPDATE 
-router.put("/data/:id", function (req, res) {
+// UPLOAD FILE
+const storage = multer.diskStorage({
+    destination: './uploads',
+    filename: function (req, file, cb) {
+        cb(null, 'Data' + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage }).single('file');
+
+router.post("/data/upload", function (req, res) {
     try {
-        const _id = req.params.id;
-        Data.findByIdAndUpdate(_id, req.body, { new: true }, function (err, result) {
+        upload(req, res, (err) => {
             if (err) {
-                console.log(" - [FAIL] DeleteData: " + err)
+                console.log(" - [FAIL] UploadFile: " + err);
             }
-            if (result) {
+            if (req.file == undefined) {
+                res.json({
+                    status: "FAILED"
+                })
+                console.log(" - [FAIL] UploadFile: No fue posible cargar el archivo")
+            } else {
                 res.json({
                     status: "SUCCESS"
                 })
-                console.log(" - [OK] UpdateData: El registro fue eliminado")
-            } else {
-                res.json({
-                    status: "FAILED",
-                })
-                console.log(" - [FAIL] UpdateData: No fue posible eliminar el registro")
+                console.log(" - [OK] UploadFile: El archivo fue cargado")
             }
-        })
+        });
     }
     catch (error) {
-        console.log(" - [FAIL] DeleteData: " + error)
+        console.log(" - [FAIL] UploadFile: " + error)
     }
 })
 
-// DELETE ALL
-router.get("/data/deleteAll", function (req, res) {
+// DELETE ALL DATA
+router.delete("/deleteAllData", function (req, res) {
     try {
         Data.deleteMany(function (err, result) {
             if (err) {
@@ -94,12 +128,12 @@ router.get("/data/deleteAll", function (req, res) {
                 res.json({
                     status: "SUCCESS"
                 })
-                console.log(" - [OK] DeleteAll: Se eliminaron todos los registros")
+                console.log(" - [OK] DeleteAll: Se eliminaron todos los registros");
             } else {
                 res.json({
-                    status: "FAILED",
+                    status: "FAILED"
                 })
-                console.log(" - [FAIL] DeleteAll: No fue posible eliminar todos los registros")
+                console.log(" - [FAIL] DeleteAll: No fue posible eliminar todos los registros" + result)
             }
         })
     }
@@ -108,62 +142,63 @@ router.get("/data/deleteAll", function (req, res) {
     }
 })
 
-// Set storage engine 
-const storage = multer.diskStorage({
-    destination: './uploads',
-    filename: function (req, file, cb) {
-        cb(null, 'Data' + path.extname(file.originalname));
-    }
-});
-
-// Init upload 
-const upload = multer({ storage: storage }).single('file');
-
-// UPLOAD FILE
-router.post('/data/upload', (req, res) => {
-    upload(req, res, (err) => {
-        if (err) {
-            res.send({ msg: err });
-        } else {
-            if (req.file == undefined) {
-                res.send({ msg: 'Error: No File Selected!' });
-                console.log("Aqui no vamos :v")
-            } else {
-                console.log("Aqui vamos :v")
-            }
-        }
-
-    });
-    convertToJSON();
-    saveData();
-});
-
-
 // CONVERT TO JSON
-function convertToJSON() {
-    xlsxToJson({
-        input: './uploads/Data.xlsx', 
-        output: './uploads/Data.json'
-    }, function(err, result) {  
-        if(err) {
-            console.error(err);
-        } else {
-            console.log(result);
-        }
-    });
-}
+router.post("/data/convert", function (req, res) {
+    try {
+        xlsxToJson({
+            input: './uploads/Data.xlsx',
+            output: './uploads/Data.json'
+        }, function (err, result) {
+            if (err) {
+                console.log(" - [FAIL] ConvertToJSON: " + err)
+            }
+            if (result) {
+                console.log(" - [OK] ConvertToJSON: Archivo convertido a Data.json");
+                res.json({
+                    status: "SUCCESS"
+                })
+            } else {
+                console.log(" - [FAIL] ConvertToJSON: No se logro convertir el Archivo formato .json");
+                res.json({
+                    status: "FAILED"
+                })
+            }
+        })
+    }
+    catch (error) {
+        console.log(" - [FAIL] ConvertToJSON: " + error)
+    }
+})
 
 // SAVE DATA
-function saveData() {
-    // Read JSON file
-    let rawdata = fs.readFileSync("./uploads/Data.json");
-    let data = JSON.parse(rawdata);
+const data = JSON.parse(fs.readFileSync('./uploads/Data.json', 'utf-8'))
 
-    // Insert JSON into MongoDB 
-    data.forEach(item => {
-        let model = new Data(item);  // Create a model for each item in the JSON file 
-        model.save();
-    });
+
+// import data to MongoDB
+const importData = async () => {
+    try {
+        await Data.create(data)
+        console.log('data successfully imported')
+        // to exit the process
+        process.exit()
+    } catch (error) {
+        console.log('error', error)
+    }
 }
+
+router.post("/data/saveData", function (req, res) {
+
+    const importData = async () => {
+        try {
+            await Data.create(data)
+            console.log('data successfully imported')
+            // to exit the process
+            process.exit()
+        } catch (error) {
+            console.log('error', error)
+        }
+    }
+    importData() 
+})
 
 module.exports = router

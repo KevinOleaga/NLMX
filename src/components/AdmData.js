@@ -1,5 +1,4 @@
 import axios from 'axios'
-import * as XLSX from "xlsx";
 import Swal from 'sweetalert2'
 import { Button, Modal } from 'react-bootstrap'
 import React, { useEffect, useState } from 'react';
@@ -13,94 +12,11 @@ import companyLogo from './assets/img/logo.png';
 const AdmData = () => {
 
     const [file, setFile] = useState(null);
-
     const handleChange = (e) => {
         setFile(e.target.files[0]);
     };
 
-    const saveExcel_bk = async (e) => {
-        e.preventDefault();
-
-        const formData = new FormData();
-        formData.append('file', file);
-
-        try {
-            const res = await axios.post('http://127.0.0.1:8000/data/upload', formData);
-            MySwal.fire({
-                title: <strong>Datos almacenados correctamente!</strong>,
-                icon: 'success'
-            })
-        } catch (err) {
-            MySwal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Ha ocurrido un error al cargar los datos, contacta al administrador para solventarlo'
-            })
-
-            // alert("Error: saveExcel() ► " + err);
-        }
-    };
-
-
-    const saveExcel = (e) => {
-        e.preventDefault();
-
-        const formData = new FormData();
-        formData.append('file', file);
-        try {
-            const res = axios.post('http://127.0.0.1:8000/data/upload', formData);
-            MySwal.fire({
-                title: <strong>Datos almacenados correctamente!</strong>,
-                icon: 'success'
-            })
-        } catch (err) {
-            MySwal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Ha ocurrido un error al cargar los datos, contacta al administrador para solventarlo'
-            })
-
-            // alert("Error: saveExcel() ► " + err);
-        }
-    }
-
-
-
-
     const [Data, setData] = useState([]);
-
-    const readExcel = (file) => {
-        const promise = new Promise((resolve, reject) => {
-            const fileReader = new FileReader();
-            fileReader.readAsArrayBuffer(file);
-
-            fileReader.onload = (e) => {
-                const bufferArray = e.target.result;
-                const wb = XLSX.read(bufferArray, { type: "buffer" });
-                const wsname = wb.SheetNames[0];
-                const ws = wb.Sheets[wsname];
-                const data = XLSX.utils.sheet_to_json(ws);
-                resolve(data);
-            };
-
-            fileReader.onerror = (error) => {
-                reject(error);
-            };
-        });
-
-        promise.then((d) => {
-            setData(d);
-        });
-    };
-
-
-
-
-
-
-
-
-    
     const MySwal = withReactContent(Swal)
 
     const [RowData, SetRowData] = useState([])
@@ -111,70 +27,6 @@ const AdmData = () => {
     //DEFINE LOCAL STATES
     const [RequestDate, setRequestDate] = useState("")
     const [QuantityOrdered, setQuantityOrdered] = useState("")
-
-    //ID 4 UPDATE OR DELETE
-    const [Id, setId] = useState("")
-
-    // UPDATE
-    const [ViewEdit, SetEditShow] = useState(false)
-    const handleEditShow = () => { SetEditShow(true) }
-    const hanldeEditClose = () => { SetEditShow(false) }
-
-    const handleEdit = () => {
-        const url = `http://127.0.0.1:8000/data/${Id}`
-        const Credentials = { RequestDate, QuantityOrdered }
-        axios.put(url, Credentials)
-            .then(response => {
-                const result = response.data;
-                const { status, message } = result;
-                if (status !== 'SUCCESS') {
-                    MySwal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
-                    })
-                }
-                else {
-                    window.location.reload()
-                }
-            })
-            .catch(err => {
-                MySwal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
-                })
-            })
-    }
-
-    //DELETE
-    const [Delete, setDelete] = useState(true)
-
-    const handleDelete = () => {
-        const url = `http://127.0.0.1:8000/data/${Id}`
-        axios.delete(url)
-            .then(response => {
-                const result = response.data;
-                const { status, message } = result;
-                if (status !== 'SUCCESS') {
-                    MySwal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
-                    })
-                }
-                else {
-                    window.location.reload()
-                }
-            })
-            .catch(err => {
-                MySwal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
-                })
-            })
-    }
 
     // GET ALL DATA
     const GetAllData = () => {
@@ -203,13 +55,22 @@ const AdmData = () => {
             })
     }
 
-    // DELETE ALL DATA
-    const DeleteAllData = () => {
-        const url = `http://127.0.0.1:8000/data/deleteAll`
-        axios.get(url)
+    //ID 4 UPDATE OR DELETE
+    const [Id, setId] = useState("")
+
+    // UPDATE
+    const [ViewEdit, SetEditShow] = useState(false)
+    const handleEditShow = () => { SetEditShow(true) }
+    const hanldeEditClose = () => { SetEditShow(false) }
+
+    const handleEdit = () => {
+        const url = `http://127.0.0.1:8000/data/${Id}`
+        const Credentials = { RequestDate, QuantityOrdered }
+
+        axios.put(url, Credentials)
             .then(response => {
                 const result = response.data;
-                const { status } = result;
+                const { status, message } = result;
                 if (status !== 'SUCCESS') {
                     MySwal.fire({
                         icon: 'error',
@@ -218,7 +79,7 @@ const AdmData = () => {
                     })
                 }
                 else {
-                    alert("TABLA DEPURADA")
+                    window.location.reload()
                 }
             })
             .catch(err => {
@@ -229,6 +90,121 @@ const AdmData = () => {
                 })
             })
     }
+
+    // DELETE
+    const [Delete, setDelete] = useState(true)
+
+    const handleDelete = () => {
+        const url = `http://127.0.0.1:8000/data/${Id}`
+        axios.delete(url)
+            .then(response => {
+                const result = response.data;
+                const { status, message } = result;
+                if (status !== 'SUCCESS') {
+                    MySwal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                    })
+                }
+                else {
+                    window.location.reload()
+                }
+            })
+            .catch(err => {
+                MySwal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                })
+            })
+    }
+
+    // UPDATE ALL DATA
+    const saveExcel = (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        // UPLOAD XLXS FILE
+        axios.post('http://127.0.0.1:8000/data/upload', formData)
+            .then(response => {
+                const result = response.data;
+                const { status, message } = result;
+                if (status !== 'SUCCESS') {
+                    MySwal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                    })
+                }
+                else {
+                    // DELETE ALL DATA
+                    axios.delete('http://127.0.0.1:8000/deleteAllData', formData)
+                        .then(response => {
+                            const result = response.data;
+                            const { status, message } = result;
+                            if (status !== 'SUCCESS') {
+                                MySwal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                                })
+                            }
+                            else {
+                                // CONVERT TO JSON
+                                axios.post('http://127.0.0.1:8000/data/convert', formData)
+                                    .then(response => {
+                                        const result = response.data;
+                                        const { status, message } = result;
+                                        if (status !== 'SUCCESS') {
+                                            MySwal.fire({
+                                                icon: 'error',
+                                                title: 'Oops...',
+                                                text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                                            })
+                                        }
+                                        else {
+                                            // SAVE DATA
+                                            axios.post('http://127.0.0.1:8000/data/saveData', formData)
+                                                .then(response => {
+                                                    window.location.reload();
+                                                }).catch(err => {
+                                                    MySwal.fire({
+                                                        icon: 'error',
+                                                        title: 'Oops...',
+                                                        text: 'Ha odddddddcurrido un error, contacta al administrador para solventarlo' + err.message
+                                                    })
+                                                })
+                                        }
+                                    }).catch(err => {
+                                        MySwal.fire({
+                                            icon: 'error',
+                                            title: 'Oops...',
+                                            text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                                        })
+                                    })
+                            }
+                        }).catch(err => {
+                            MySwal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                            })
+                        })
+                }
+
+            })
+            .catch(err => {
+                MySwal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ha ocurrido un error, contacta al administrador para solventarlo'
+                })
+            })
+    }
+
 
     useEffect(() => {
         GetAllData();
@@ -310,21 +286,10 @@ const AdmData = () => {
                             <div class="card">
                                 <div className='custom_input'>
                                     <h5 class="form-label" for="customFile">Ingrese un nuevo archivo en formato .csv</h5>
-
-
-                                    <input type="file" accept=".xlsx" class="form-control form-control-lg" id="formFile" onChange={e => { 
-                                        const file = e.target.files[0];
-                                        this.DeleteAllData(); 
-                                        this.saveExcel(file) 
-                                    }}/>
-                                    
-                                    
-                                 
-
-
+                                    <br></br>
                                     <form onSubmit={saveExcel}>
-                                        <input type="file" name="file" onChange={handleChange} />
-                                        <button type="submit">Upload</button>
+                                        <input type="file" accept=".xlsx" name="file" class="form-control form-control" onChange={handleChange} />
+                                        <button class="btn btn-warning" type="submit">Cargar archivo</button>
                                     </form>
                                 </div>
 
@@ -433,13 +398,13 @@ const AdmData = () => {
                         <div>
                             <div className='form-group mt-3'>
                                 <label>Request Date</label>
-                                <input type="date" className='form-control' onChange={(e) => setRequestDate(e.target.value)} defaultValue={RowData.RequestDate} required="true" />
+                                <input type="date" className='form-control' onChange={(e) => setRequestDate(e.target.value)} defaultValue={RowData.RequestDate} required />
                             </div>
                             <div className='form-group mt-3'>
                                 <label>Quantity Ordered</label>
-                                <input type="number" className='form-control' onChange={(e) => setQuantityOrdered(e.target.value)} defaultValue={RowData.QuantityOrdered} required="true" />
+                                <input type="number" placeholder="adsf" className='form-control' onChange={(e) => setQuantityOrdered(e.target.value)} defaultValue={RowData.QuantityOrdered} required />
                             </div>
-                            <Button type='submit' className='btn btn-warning mt-4' onClick={handleEdit}>Editar registro</Button>
+                            <Button type='submit' className='btn btn-warning mt-4 custom_center' onClick={handleEdit}>Editar registro</Button>
                             <div>
                             </div>
                         </div>

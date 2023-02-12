@@ -6,7 +6,7 @@ const router = express.Router();
 router.post('/login', function (req, res) {
     Login.findOne({ email: req.body.email, password: req.body.password }, function (err, result) {
         if (err) {
-            console.log("Error: " + err)
+            console.log(" - [FAIL] LOGIN: " + err)
         }
         if (result) {
             res.json("exist")
@@ -28,7 +28,7 @@ router.post('/signup', function (req, res) {
 
     Login.findOne({ email: req.body.email }, function (err, result) {
         if (err) {
-            console.log("Error: " + err)
+            console.log(" - [FAIL] SIGN UP: " + err)
         }
         if (result) {
             res.json("exist")
