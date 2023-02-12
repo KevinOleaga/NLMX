@@ -224,7 +224,7 @@ const AdmData = () => {
             {/* START MENU */}
             <div class="sidebar" data-color="black" data-active-color="danger">
                 <div class="logo">
-                    <a className="simple-text logo-normal" href='#'>
+                    <a className="simple-text logo-normal" href="/#">
                         <div className="logo-image-small">
                             <img className="img-responsive logo-normal logo_custom" src={companyLogo} alt="NLMX" />
                         </div>
@@ -268,7 +268,7 @@ const AdmData = () => {
                                     <span class="navbar-toggler-bar bar3"></span>
                                 </button>
                             </div>
-                            <a href="#" class="navbar-brand">¡Bienvenido! ► Administraci&oacute;n de datos</a>
+                            <a href="/#" class="navbar-brand">¡Bienvenido! ► Administraci&oacute;n de datos</a>
                         </div>
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
                             aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
@@ -378,9 +378,9 @@ const AdmData = () => {
                         <div class="row">
                             <nav class="footer-nav">
                                 <ul>
-                                    <li><a href="#" target="#">NLMX</a></li>
-                                    <li><a href="#" target="#">Manual de Usuario</a></li>
-                                    <li><a href="#" target="#">Ayuda</a></li>
+                                    <li><a href="/#" target="#">NLMX</a></li>
+                                    <li><a href="/#" target="#">Manual de Usuario</a></li>
+                                    <li><a href="/#" target="#">Ayuda</a></li>
                                 </ul>
                             </nav>
                             <div class="credits ml-auto">
